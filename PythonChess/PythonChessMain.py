@@ -173,7 +173,7 @@ class PythonChessMain:
 			#Right now its just hardcoded at 16 moves per turn but
 			#I'm devising a moveList which will only allow each piece to move once per turn
 			moveCount += 1
-			if moveCount > 15:
+			if moveCount > 15 or moveTuple == None:
 				currentPlayerIndex = (currentPlayerIndex+1)%2 #this will cause the currentPlayerIndex to toggle between 1 and 0
 				moveCount = 0
 				movedToList = []

@@ -123,6 +123,10 @@ class ChessBoard:
 		return name
 	
 	def MovePiece(self,moveTuple):
+
+		if moveTuple == None:
+			return "Turn Passed"
+
 		fromSquare_r = moveTuple[0][0]
 		fromSquare_c = moveTuple[0][1]
 		toSquare_r = moveTuple[1][0]

@@ -19,6 +19,9 @@ from ChessRules import ChessRules
 from ScrollingTextBox import ScrollingTextBox
 from ChessBoard import ChessBoard
 
+import time
+blue = (0,0,200)
+
 class ChessGUI_pygame:
 	def __init__(self,graphicStyle=1):
 		os.environ['SDL_VIDEO_CENTERED'] = '1' #should center pygame window on the screen
@@ -34,7 +37,6 @@ class ChessGUI_pygame:
 		self.LoadImages(graphicStyle)
 		#pygame.font.init() - should be already called by pygame.init()
 		self.fontDefault = pygame.font.Font( None, 20 )
-		
 		
 
 	def LoadImages(self,graphicStyle):
@@ -189,8 +191,23 @@ class ChessGUI_pygame:
 					self.screen.blit(self.white_queen,(screenX,screenY))
 				if board[r][c] == 'wK':
 					self.screen.blit(self.white_king,(screenX,screenY))
+
+		#Add end turn button
+		pygame.draw.rect(self.screen, blue, (750, 430, 70, 40))
+		textSurface, textRect = self.text_objects("End Turn", self.fontDefault)
+		textRect.center = ((750+(70/2)), (430+(40/2)))
+		self.screen.blit(textSurface, textRect)
 			
 		pygame.display.flip()
+
+	def text_objects(self, text, font):
+		textSurface = font.render(text, True, (255,255,255))
+		return textSurface, textSurface.get_rect()
+
+	def checkIfEndingTurn(self, coorTuple):
+		if (750 < coorTuple[0] < 750+70) and (430 < coorTuple[1] < 430+40):
+			return True
+		return False
 
 	def EndGame(self,board):
 		self.PrintMessage("Press any key to exit.")
@@ -206,7 +223,7 @@ class ChessGUI_pygame:
 				sys.exit(0)
 
 			
-	def GetPlayerInput(self,board,currentColor, movedToList):
+	def GetPlayerInput(self,board,currentColor, movedToList): #Let this function also check if ending turn
 		#returns ((from_row,from_col),(to_row,to_col))
 		fromSquareChosen = 0
 		toSquareChosen = 0
@@ -220,6 +237,8 @@ class ChessGUI_pygame:
 					fromTuple = []
 			if e.type is MOUSEBUTTONDOWN:
 				(mouseX,mouseY) = pygame.mouse.get_pos()
+				if self.checkIfEndingTurn((mouseX,mouseY)):
+					return None
 				squareClicked = self.ConvertToChessCoords((mouseX,mouseY))
 				if squareClicked[0]<0 or squareClicked[0]>7 or squareClicked[1]<0 or squareClicked[1]>7:
 					squareClicked = [] #not a valid chess square
