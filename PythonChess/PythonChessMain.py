@@ -142,8 +142,9 @@ class PythonChessMain:
 		currentPlayerIndex = 0
 		turnCount = 0
 		moveCount = 0
+		movedToList = []
 		#change this too while(king exists)
-		while not self.Rules.IsCheckmate(self.Board.GetState(),self.player[currentPlayerIndex].color):
+		while True: #CHANGED: while not self.Rules.IsCheckmate(self.Board.GetState(),self.player[currentPlayerIndex].color):
 			board = self.Board.GetState()
 			currentColor = self.player[currentPlayerIndex].GetColor()
 			#hardcoded so that player 1 is always white
@@ -160,7 +161,7 @@ class PythonChessMain:
 			if self.player[currentPlayerIndex].GetType() == 'AI':
 				moveTuple = self.player[currentPlayerIndex].GetMove(self.Board.GetState(), currentColor) 
 			else:
-				moveTuple = self.Gui.GetPlayerInput(board,currentColor)
+				moveTuple = self.Gui.GetPlayerInput(board,currentColor, movedToList)
 			moveReport = self.Board.MovePiece(moveTuple) #moveReport = string like "White Bishop moves from A1 to C3" (+) "and captures ___!"
 			self.Gui.PrintMessage(moveReport)
 
@@ -175,6 +176,7 @@ class PythonChessMain:
 			if moveCount > 15:
 				currentPlayerIndex = (currentPlayerIndex+1)%2 #this will cause the currentPlayerIndex to toggle between 1 and 0
 				moveCount = 0
+				movedToList = []
 
 			if self.AIvsAI and self.AIpause:
 				time.sleep(self.AIpauseSeconds)
