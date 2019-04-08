@@ -140,6 +140,12 @@ class ChessBoard:
 
 		fromPiece_fullString = self.GetFullString(fromPiece)
 		toPiece_fullString = self.GetFullString(toPiece)
+
+		#Pawn promotion
+		if 'wP' == fromPiece and toSquare_r == 0:
+			self.squares[toSquare_r][toSquare_c] = 'wQ'
+		elif 'bP' == fromPiece and toSquare_r == 7:
+			self.squares[toSquare_r][toSquare_c] = 'bQ'
 		
 		if toPiece == 'e':
 			messageString = fromPiece_fullString+ " moves from "+self.ConvertToAlgebraicNotation(moveTuple[0])+\
