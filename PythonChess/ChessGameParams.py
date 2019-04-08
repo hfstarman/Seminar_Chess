@@ -30,7 +30,7 @@ class TkinterGameSetupParams:
 		Label(self.frame, text="Player 1 (White)").grid(row=2,column=0)
 		self.entry_player1Name = Entry(self.frame)
 		self.entry_player1Name.grid(row=2,column=1)
-		self.entry_player1Name.insert(ANCHOR,"Kasparov")
+		self.entry_player1Name.insert(ANCHOR,"Kulikowski")
 		
 		self.tk_player1Type = StringVar()
 		Radiobutton(self.frame, text="Human",variable=self.tk_player1Type,value="human").grid(row=2,column=2)
@@ -43,7 +43,7 @@ class TkinterGameSetupParams:
 		Label(self.frame, text="Player 2 (Black)").grid(row=3,column=0)
 		self.entry_player2Name = Entry(self.frame)
 		self.entry_player2Name.grid(row=3,column=1)
-		self.entry_player2Name.insert(ANCHOR,"Light Blue")
+		self.entry_player2Name.insert(ANCHOR,"Disco Dingo")
 		
 		self.tk_player2Type = StringVar()
 		Radiobutton(self.frame, text="Human",variable=self.tk_player2Type,value="human").grid(row=3,column=2)
@@ -70,9 +70,9 @@ class TkinterGameSetupParams:
 		else:
 			#self.instructionMessage.set("Please input a name for both players!")
 			if self.player1Name == "":
-				self.entry_player1Name.insert(ANCHOR,"Kasparov")
+				self.entry_player1Name.insert(ANCHOR,"Kulikowski")
 			if self.player2Name == "":
-				self.entry_player2Name.insert(ANCHOR,"Light Blue")
+				self.entry_player2Name.insert(ANCHOR,"Disco Dingo")
 
 	def GetGameSetupParams(self):
 		self.root.wait_window(self.frame) #waits for frame to be destroyed

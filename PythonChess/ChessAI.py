@@ -32,20 +32,24 @@ class ChessAI:
 class ChessAI_random(ChessAI):
 	#Randomly pick any legal move.	
 	
-	def GetMove(self,board,color):
+	def GetMove(self,board,color, movedToList):
 		#print "In ChessAI_random.GetMove"
 	
-		myPieces = self.GetMyPiecesWithLegalMoves(board,color)
+		myPieces = self.GetMyPiecesWithLegalMoves(board,color,movedToList)
 		
+		if len(myPieces) < 1:
+			return None
+
 		#pick a random piece, then a random legal move for that piece
 		fromTuple = myPieces[random.randint(0,len(myPieces)-1)]
 		legalMoves = self.Rules.GetListOfValidMoves(board,color,fromTuple)
 		toTuple = legalMoves[random.randint(0,len(legalMoves)-1)]
 		
 		moveTuple = (fromTuple,toTuple)
+		movedToList.append(toTuple)
 		return moveTuple
 		
-	def GetMyPiecesWithLegalMoves(self,board,color):
+	def GetMyPiecesWithLegalMoves(self,board,color,movedToList):
 		#print "In ChessAI_random.GetMyPiecesWithLegalMoves"
 		if color == "black":
 			myColor = 'b'
@@ -60,7 +64,7 @@ class ChessAI_random(ChessAI):
 			for col in range(8):
 				piece = board[row][col]
 				if myColor in piece:
-					if len(self.Rules.GetListOfValidMoves(board,color,(row,col))) > 0:
+					if len(self.Rules.GetListOfValidMoves(board,color,(row,col))) > 0 and (row,col) not in movedToList:
 						myPieces.append((row,col))	
 		
 		return myPieces
@@ -78,10 +82,10 @@ class ChessAI_defense(ChessAI_random):
 		self.piecePriority = protectionPriority
 		ChessAI.__init__(self,name,color)
 	
-	def GetMove(self,board,color):
+	def GetMove(self,board,color,movedToList):
 		#print "In ChessAI_defense.GetMove"
 
-		myPieces = self.GetMyPiecesWithLegalMoves(board,color)
+		myPieces = self.GetMyPiecesWithLegalMoves(board,color,movedToList)
 		enemyPieces = self.GetEnemyPiecesWithLegalMoves(board,color)
 		
 		#Get "protected" moves - move piece such that opponent can't capture it next turn
@@ -297,10 +301,10 @@ class ChessAI_defense(ChessAI_random):
 		
 class ChessAI_offense(ChessAI_defense):
 	#Same as defense AI, except capturing enemy piece is higher priority than protecting own pieces
-	def GetMove(self,board,color):
+	def GetMove(self,board,color,movedToList):
 		#print "In ChessAI_offense.GetMove"
 
-		myPieces = self.GetMyPiecesWithLegalMoves(board,color)
+		myPieces = self.GetMyPiecesWithLegalMoves(board,color,movedToList)
 		enemyPieces = self.GetEnemyPiecesWithLegalMoves(board,color)
 		
 		#Get "protected" moves - move piece such that opponent can't capture it next turn
@@ -351,7 +355,7 @@ if __name__ == "__main__":
 	gui.Draw(board,highlightSquares=[])
 	defense = ChessAI_defense('Bob','black')
 	
-	myPieces = defense.GetMyPiecesWithLegalMoves(board,color)
+	myPieces = defense.GetMyPiecesWithLegalMoves(board,color,movedToList)
 	enemyPieces = defense.GetEnemyPiecesWithLegalMoves(board,color)
 	protectedMoveTuples = defense.GetProtectedMoveTuples(board,color,myPieces,enemyPieces)
 	movesThatPutEnemyInCheck = defense.GetMovesThatPutEnemyInCheck(board,color,protectedMoveTuples)

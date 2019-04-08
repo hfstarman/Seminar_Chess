@@ -154,12 +154,13 @@ class PythonChessMain:
 			baseMsg = "TURN %s - %s (%s)" % (str(turnCount),self.player[currentPlayerIndex].GetName(),currentColor)
 			self.Gui.PrintMessage("-----%s-----" % baseMsg)
 			self.Gui.Draw(board)
-			#Don't need to check for this
+			#Don't need to check for this (probably)
 			if self.Rules.IsInCheck(board,currentColor):
 				self.Gui.PrintMessage("Warning..."+self.player[currentPlayerIndex].GetName()+" ("+self.player[currentPlayerIndex].GetColor()+") is in check!")
 			
 			if self.player[currentPlayerIndex].GetType() == 'AI':
-				moveTuple = self.player[currentPlayerIndex].GetMove(self.Board.GetState(), currentColor) 
+				moveTuple = self.player[currentPlayerIndex].GetMove(self.Board.GetState(), currentColor, movedToList)
+				print(movedToList) 
 			else:
 				moveTuple = self.Gui.GetPlayerInput(board,currentColor, movedToList)
 			moveReport = self.Board.MovePiece(moveTuple) #moveReport = string like "White Bishop moves from A1 to C3" (+) "and captures ___!"
