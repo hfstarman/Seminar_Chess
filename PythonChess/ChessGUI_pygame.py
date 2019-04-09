@@ -167,29 +167,29 @@ class ChessGUI_pygame:
 		for r in range(boardSize):
 			for c in range(boardSize):
 				(screenX,screenY) = self.ConvertToScreenCoords((r,c))
-				if board[r][c] == 'bP':
+				if 'bP' in board[r][c]:
 					self.screen.blit(self.black_pawn,(screenX,screenY))
-				if board[r][c] == 'bR':
+				if 'bR' in board[r][c]:
 					self.screen.blit(self.black_rook,(screenX,screenY))
-				if board[r][c] == 'bT':
+				if 'bT' in board[r][c]:
 					self.screen.blit(self.black_knight,(screenX,screenY))
-				if board[r][c] == 'bB':
+				if 'bB' in board[r][c]:
 					self.screen.blit(self.black_bishop,(screenX,screenY))
-				if board[r][c] == 'bQ':
+				if 'bQ' in board[r][c]:
 					self.screen.blit(self.black_queen,(screenX,screenY))
-				if board[r][c] == 'bK':
+				if 'bK' in board[r][c]:
 					self.screen.blit(self.black_king,(screenX,screenY))
-				if board[r][c] == 'wP':
+				if 'wP' in board[r][c]:
 					self.screen.blit(self.white_pawn,(screenX,screenY))
-				if board[r][c] == 'wR':
+				if 'wR' in board[r][c]:
 					self.screen.blit(self.white_rook,(screenX,screenY))
-				if board[r][c] == 'wT':
+				if 'wT' in board[r][c]:
 					self.screen.blit(self.white_knight,(screenX,screenY))
-				if board[r][c] == 'wB':
+				if 'wB' in board[r][c]:
 					self.screen.blit(self.white_bishop,(screenX,screenY))
-				if board[r][c] == 'wQ':
+				if 'wQ' in board[r][c]:
 					self.screen.blit(self.white_queen,(screenX,screenY))
-				if board[r][c] == 'wK':
+				if 'wK' in board[r][c]:
 					self.screen.blit(self.white_king,(screenX,screenY))
 
 		#Add end turn button

@@ -194,7 +194,9 @@ class ChessRules:
 		board[toSquare_r][toSquare_c] = toPiece
 		board[fromSquare_r][fromSquare_c] = fromPiece
 
-		return retval
+		#quick fix to remove checking in the game (will adjust later if need be)
+		return False
+		#return retval
 
 	def IsInCheck(self,board,color):
 		#check if 'color' is in check

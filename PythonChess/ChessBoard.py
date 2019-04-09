@@ -23,14 +23,14 @@ class ChessBoard:
 						['e','e','e','e','e','e','e','e']]
 						
 		if setupType == 0:
-			self.squares[0] = ['bR','bT','bB','bQ','bK','bB','bT','bR']
-			self.squares[1] = ['bP','bP','bP','bP','bP','bP','bP','bP']
+			self.squares[0] = ['bR1','bT1','bB1','bQ','bK','bB2','bT2','bR2']
+			self.squares[1] = ['bP1','bP2','bP3','bP4','bP5','bP6','bP7','bP8']
 			self.squares[2] = ['e','e','e','e','e','e','e','e']
 			self.squares[3] = ['e','e','e','e','e','e','e','e']
 			self.squares[4] = ['e','e','e','e','e','e','e','e']
 			self.squares[5] = ['e','e','e','e','e','e','e','e']
-			self.squares[6] = ['wP','wP','wP','wP','wP','wP','wP','wP']
-			self.squares[7] = ['wR','wT','wB','wQ','wK','wB','wT','wR']
+			self.squares[6] = ['wP1','wP2','wP3','wP4','wP5','wP6','wP7','wP8']
+			self.squares[7] = ['wR1','wT1','wB1','wQ','wK','wB2','wT2','wR2']
 
 		#Debugging set-ups
 		#Testing IsLegalMove
@@ -122,10 +122,12 @@ class ChessBoard:
 			
 		return name
 	
-	def MovePiece(self,moveTuple):
+	def MovePiece(self,moveTuple,movedToList):
 
 		if moveTuple == None:
 			return "Turn Passed"
+
+		movedToList.append(moveTuple[1])
 
 		fromSquare_r = moveTuple[0][0]
 		fromSquare_c = moveTuple[0][1]
@@ -142,10 +144,10 @@ class ChessBoard:
 		toPiece_fullString = self.GetFullString(toPiece)
 
 		#Pawn promotion
-		if 'wP' == fromPiece and toSquare_r == 0:
-			self.squares[toSquare_r][toSquare_c] = 'wQ'
-		elif 'bP' == fromPiece and toSquare_r == 7:
-			self.squares[toSquare_r][toSquare_c] = 'bQ'
+		if 'wP' in fromPiece and toSquare_r == 0:
+			self.squares[toSquare_r][toSquare_c] = 'wQ' + fromPiece[-1] #Add the pawn's Number
+		elif 'bP' in fromPiece and toSquare_r == 7:
+			self.squares[toSquare_r][toSquare_c] = 'bQ' + fromPiece[-1]
 		
 		if toPiece == 'e':
 			messageString = fromPiece_fullString+ " moves from "+self.ConvertToAlgebraicNotation(moveTuple[0])+\
@@ -169,7 +171,7 @@ if __name__ == "__main__":
 		print("")
 		
 	print("Move piece test...")
-	cb.MovePiece(((0,0),(4,4)))
+	cb.MovePiece(((0,0),(4,4)),[])
 	board2 = cb.GetState()
 	for r in range(8):
 		for c in range(8):

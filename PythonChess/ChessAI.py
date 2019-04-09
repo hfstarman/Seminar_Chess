@@ -46,7 +46,6 @@ class ChessAI_random(ChessAI):
 		toTuple = legalMoves[random.randint(0,len(legalMoves)-1)]
 		
 		moveTuple = (fromTuple,toTuple)
-		movedToList.append(toTuple)
 		return moveTuple
 		
 	def GetMyPiecesWithLegalMoves(self,board,color,movedToList):

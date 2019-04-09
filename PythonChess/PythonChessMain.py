@@ -160,10 +160,10 @@ class PythonChessMain:
 			
 			if self.player[currentPlayerIndex].GetType() == 'AI':
 				moveTuple = self.player[currentPlayerIndex].GetMove(self.Board.GetState(), currentColor, movedToList)
-				print(movedToList) 
 			else:
 				moveTuple = self.Gui.GetPlayerInput(board,currentColor, movedToList)
-			moveReport = self.Board.MovePiece(moveTuple) #moveReport = string like "White Bishop moves from A1 to C3" (+) "and captures ___!"
+				print(board)
+			moveReport = self.Board.MovePiece(moveTuple, movedToList) #moveReport = string like "White Bishop moves from A1 to C3" (+) "and captures ___!"
 			self.Gui.PrintMessage(moveReport)
 
 			#If a king has been captured then end the game
