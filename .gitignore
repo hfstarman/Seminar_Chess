@@ -1,0 +1,3 @@
+PythonChess/*.pyc
+.gitignore.swp
+PythonChess/__pycache__
