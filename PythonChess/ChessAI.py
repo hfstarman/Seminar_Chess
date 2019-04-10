@@ -35,22 +35,35 @@ class ChessAI:
 class ChessAI_random(ChessAI):
     #Randomly pick any legal move.
 
-    #def __init__(self):
-        # load policies
-        #file_name="GGEZ.txt"
-        #self.move_set = {}  # dict
-        #if file_name is not None:
-        #    load_move_set(file_name)
-        #else:
-        #    create_random_moveset('new_moveset_' + str(datetime.datetime.now()) + '.txt')
+    def __init__(self, name, color):
+        #load policies
+        self.name = name
+        self.color = color
+        self.type = 'AI'
+        self.Rules = ChessRules()
+        file_name="GGEZ.txt"
+        self.move_set = {}  # dict
+        if file_name is not None:
+            self.load_move_set(file_name)
+        else:
+            self.create_random_moveset('new_moveset_' + str(datetime.datetime.now()) + '.txt')
 
-    def load_move_set(file_name):
+    def GetName(self):
+        return self.name
+
+    def GetColor(self):
+        return self.color
+
+    def GetType(self):
+        return self.type
+
+    def load_move_set(self, file_name):
+        self.move_set = {}
         f = open(file_name, 'r')
         for line in f:
             line = line.split('\t')
-            print(line)
             key = (line[0], line[1], line[2])
-            value = (line[3], line[4])
+            value = (int(line[3]), int(line[4].strip()))
             self.move_set[key] = value
         f.close()
 
@@ -61,7 +74,7 @@ class ChessAI_random(ChessAI):
                     'wR1','wT1','wB1','wQ','wK','wB2','wT2','wR2',
                     'wQ1', 'wQ2', 'wQ3', 'wQ4', 'wQ5', 'wQ6', 'wQ7', 'wQ8',
                     'bQ1', 'bQ2', 'bQ3', 'bQ4', 'bQ5', 'bQ6', 'bQ7', 'bQ8']
-        file_name = 'GGEZ.txt'
+        file_name = 'GGEZ_' + str(datetime.datetime.now()) + '.txt'
         f = open(file_name, 'w+')
         for piece in pieces:
             for i in range(8):
@@ -81,9 +94,34 @@ class ChessAI_random(ChessAI):
         f.close()
         return
 
+    def get_piece_pose(self, piece, board):
+        for i in range(8):
+            for j in range(8):
+                if board[i][j] == piece:
+                    return i, j
+        return None, None
+
+    def get_move_AI(self, board, color, movedToList):
+        myPieces = self.GetMyPiecesWithLegalMoves(board,color,movedToList)
+        moves_out = []
+        if len(myPieces) < 1:
+            return None
+        for (i,j) in myPieces:
+            piece = board[i][j]
+            print("current piece", piece)
+            x, y = self.get_piece_pose(piece, board)
+            move = self.move_set[(piece, str(x), str(y))]  #string
+            print(move)
+            if self.Rules.IsLegalMove(board, color, (x,y), move):
+                print(((x,y), move))
+                moves_out.append(((x,y), move))
+        #moves_out.append(((-1,-1),(-1,-1)))
+        print(moves_out)
+        return moves_out
+
     def GetMove(self,board,color, movedToList):
         #print "In ChessAI_random.GetMove"
-
+        print('here',movedToList)
         myPieces = self.GetMyPiecesWithLegalMoves(board,color,movedToList)
 
         if len(myPieces) < 1:
@@ -91,8 +129,6 @@ class ChessAI_random(ChessAI):
 
         #pick a random piece, then a random legal move for that piece
         fromTuple = myPieces[random.randint(0,len(myPieces)-1)]
-        print(color)
-        print(board)
         legalMoves = self.Rules.GetListOfValidMoves(board,color,fromTuple)
         toTuple = legalMoves[random.randint(0,len(legalMoves)-1)]
 
@@ -397,7 +433,7 @@ if __name__ == "__main__":
 
     foo = ChessAI_random("test", "black")
     foo.generate_random_policies()
-    sys.exit(0)
+    foo.load_move_set('GGEZ.txt')
     """
     from ChessBoard import ChessBoard
     cb = ChessBoard(3)
