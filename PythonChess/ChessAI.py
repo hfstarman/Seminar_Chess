@@ -108,20 +108,14 @@ class ChessAI_random(ChessAI):
             return None
         for (i,j) in myPieces:
             piece = board[i][j]
-            print("current piece", piece)
             x, y = self.get_piece_pose(piece, board)
             move = self.move_set[(piece, str(x), str(y))]  #string
-            print(move)
             if self.Rules.IsLegalMove(board, color, (x,y), move):
-                print(((x,y), move))
                 moves_out.append(((x,y), move))
-        #moves_out.append(((-1,-1),(-1,-1)))
-        print(moves_out)
         return moves_out
 
     def GetMove(self,board,color, movedToList):
         #print "In ChessAI_random.GetMove"
-        print('here',movedToList)
         myPieces = self.GetMyPiecesWithLegalMoves(board,color,movedToList)
 
         if len(myPieces) < 1:
