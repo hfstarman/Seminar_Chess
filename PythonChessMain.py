@@ -138,6 +138,40 @@ class PythonChessMain:
             else:
                 self.Gui = ChessGUI_pygame(1)
 
+    def sim_setup(self,options):
+        #gameSetupParams: Player 1 and 2 Name, Color, Human/AI level
+        player1Name = 'Kulikowski'
+        player1Type = 'randomAI'
+        player1Color = 'white'
+        player2Name = 'William, The OP'
+        player2Type = 'randomAI'
+        player2Color = 'black'
+
+        self.player = [0,0]
+        if player1Type == 'human':
+            self.player[0] = ChessPlayer(player1Name,player1Color)
+        elif player1Type == 'randomAI':
+            self.player[0] = ChessAI_random(player1Name,player1Color)
+
+        if player2Type == 'human':
+            self.player[1] = ChessPlayer(player2Name,player2Color)
+        elif player2Type == 'randomAI':
+            self.player[1] = ChessAI_random(player2Name,player2Color)
+
+        if 'AI' in self.player[0].GetType() and 'AI' in self.player[1].GetType():
+            self.AIvsAI = True
+        else:
+            self.AIvsAI = False
+
+        if options.pauseSeconds > 0:
+            self.AIpause = True
+            self.AIpauseSeconds = int(options.pauseSeconds)
+        else:
+            self.AIpause = False
+
+        self.guitype = 'text'
+        self.Gui = ChessGUI_text()
+
     def MainLoop(self):
         currentPlayerIndex = 0
         turnCount = 0
@@ -162,6 +196,8 @@ class PythonChessMain:
                 moveTuples = self.player[currentPlayerIndex].get_move_AI(self.Board.GetState(), currentColor, movedToList)
                 moveTuple = None
                 for move in moveTuples:
+                    if move[1] == (-1,-1):
+                        continue
                     moveReport = self.Board.MovePiece(move, movedToList) #moveReport = string like "White Bishop moves from A1 to C3" (+) "and captures ___!"
                     self.Gui.PrintMessage(moveReport)
             else:
@@ -171,6 +207,14 @@ class PythonChessMain:
 
             #If a king has been captured then end the game
             if self.Rules.isKingCaptured(moveReport):
+                break
+
+            kings = 0
+            for i in range(8):
+                for j in range(8):
+                    if board[i][j] == 'bK' or board[i][j] == 'wK':
+                        kings += 1
+            if kings != 2:
                 break
 
             #These lines changed the current player
@@ -185,25 +229,28 @@ class PythonChessMain:
             if self.AIvsAI and self.AIpause:
                 time.sleep(self.AIpauseSeconds)
 
+
         self.Gui.PrintMessage("KING CAPTURED!")
         winnerIndex = (currentPlayerIndex)%2
         self.Gui.PrintMessage(self.player[winnerIndex].GetName()+" ("+self.player[winnerIndex].GetColor()+") won the game!")
         self.Gui.EndGame(board)
+        self.winnerIndex = winnerIndex
+        self.turnCount = turnCount
+
+if __name__ == "__main__":
+    parser = OptionParser()
+    parser.add_option("-d", dest="debug",
+                      action="store_true", default=False, help="Enable debug mode (different starting board configuration)")
+    parser.add_option("-t", dest="text",
+                      action="store_true", default=False, help="Use text-based GUI")
+    parser.add_option("-o", dest="old",
+                      action="store_true", default=False, help="Use old graphics in pygame GUI")
+    parser.add_option("-p", dest="pauseSeconds", metavar="SECONDS",
+                      action="store", default=0, help="Sets time to pause between moves in AI vs. AI games (default = 0)")
 
 
-parser = OptionParser()
-parser.add_option("-d", dest="debug",
-                  action="store_true", default=False, help="Enable debug mode (different starting board configuration)")
-parser.add_option("-t", dest="text",
-                  action="store_true", default=False, help="Use text-based GUI")
-parser.add_option("-o", dest="old",
-                  action="store_true", default=False, help="Use old graphics in pygame GUI")
-parser.add_option("-p", dest="pauseSeconds", metavar="SECONDS",
-                  action="store", default=0, help="Sets time to pause between moves in AI vs. AI games (default = 0)")
+    (options,args) = parser.parse_args()
 
-
-(options,args) = parser.parse_args()
-
-game = PythonChessMain(options)
-game.SetUp(options)
-game.MainLoop()
+    game = PythonChessMain(options)
+    game.SetUp(options)
+    game.MainLoop()

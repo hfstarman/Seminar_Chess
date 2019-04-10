@@ -1,3 +1,5 @@
 PythonChess/*.pyc
 .gitignore.swp
 PythonChess/__pycache__
+__pycache__
+*.pyc

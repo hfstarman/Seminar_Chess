@@ -74,7 +74,8 @@ class ChessAI_random(ChessAI):
                     'wR1','wT1','wB1','wQ','wK','wB2','wT2','wR2',
                     'wQ1', 'wQ2', 'wQ3', 'wQ4', 'wQ5', 'wQ6', 'wQ7', 'wQ8',
                     'bQ1', 'bQ2', 'bQ3', 'bQ4', 'bQ5', 'bQ6', 'bQ7', 'bQ8']
-        file_name = 'GGEZ_' + str(datetime.datetime.now()) + '.txt'
+        #file_name = 'GGEZ_' + str(datetime.datetime.now()) + '.txt'
+        file_name = 'GGEZ.txt'
         f = open(file_name, 'w+')
         for piece in pieces:
             for i in range(8):
@@ -106,12 +107,16 @@ class ChessAI_random(ChessAI):
         moves_out = []
         if len(myPieces) < 1:
             return None
-        for (i,j) in myPieces:
-            piece = board[i][j]
-            x, y = self.get_piece_pose(piece, board)
+        for (x,y) in myPieces:
+            piece = board[x][y]
             move = self.move_set[(piece, str(x), str(y))]  #string
+            if random.random() < 0.0001:
+                legalMoves = self.Rules.GetListOfValidMoves(board,color,(x,y))
+                move = legalMoves[random.randint(0,len(legalMoves)-1)]
             if self.Rules.IsLegalMove(board, color, (x,y), move):
                 moves_out.append(((x,y), move))
+            else:
+                moves_out.append(((x,y), (-1,-1)))
         return moves_out
 
     def GetMove(self,board,color, movedToList):
