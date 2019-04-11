@@ -71,7 +71,7 @@ from ChessRules import ChessRules
 from ChessGameParams import TkinterGameSetupParams
 
 from optparse import OptionParser
-import time
+import time, random
 
 class PythonChessMain:
     def __init__(self,options):
@@ -193,21 +193,37 @@ class PythonChessMain:
                 self.Gui.PrintMessage("Warning..."+self.player[currentPlayerIndex].GetName()+" ("+self.player[currentPlayerIndex].GetColor()+") is in check!")
 
             if self.player[currentPlayerIndex].GetType() == 'AI':
-                moveTuples = self.player[currentPlayerIndex].get_move_AI(self.Board.GetState(), currentColor, movedToList)
-                moveTuple = None
-                for move in moveTuples:
-                    if move[1] == (-1,-1):
-                        continue
-                    moveReport = self.Board.MovePiece(move, movedToList) #moveReport = string like "White Bishop moves from A1 to C3" (+) "and captures ___!"
+                myPieces = self.player[currentPlayerIndex].GetMyPiecesWithLegalMoves(self.Board.GetState(),currentColor,movedToList)
+                moves_out = []
+                if len(myPieces) < 1:
+                    return None
+                for (x,y) in myPieces:
+                    piece = self.Board.GetState()[x][y]
+                    move = self.player[currentPlayerIndex].move_set[(piece, str(x), str(y))]  #string
+                    if random.random() < 0.0001:
+                        legalMoves = self.Rules.GetListOfValidMoves(self.Board.GetState(),currentColor,(x,y))
+                        move = legalMoves[random.randint(0,len(legalMoves)-1)]
+                    if self.Rules.IsLegalMove(self.Board.GetState(), currentColor, (x,y), move):
+                        move_out = ((x,y), move)
+                    else:
+                        move_out = ((x,y), (-1,-1))
+                    moveReport = self.Board.MovePiece(move_out, movedToList) #moveReport = string like "White Bishop moves from A1 to C3" (+) "and captures ___!"
                     self.Gui.PrintMessage(moveReport)
+                #moveTuples = self.player[currentPlayerIndex].get_move_AI(self.Board.GetState(), currentColor, movedToList)
+                moveTuple = None
+                #for move in moveTuples:
+                #    if move[1] == (-1,-1):
+                #        continue
+                #    moveReport = self.Board.MovePiece(move, movedToList) #moveReport = string like "White Bishop moves from A1 to C3" (+) "and captures ___!"
+                #    self.Gui.PrintMessage(moveReport)
             else:
                 moveTuple = self.Gui.GetPlayerInput(board,currentColor, movedToList)
                 moveReport = self.Board.MovePiece(moveTuple, movedToList) #moveReport = string like "White Bishop moves from A1 to C3" (+) "and captures ___!"
                 self.Gui.PrintMessage(moveReport)
 
             #If a king has been captured then end the game
-            if self.Rules.isKingCaptured(moveReport):
-                break
+            #if self.Rules.isKingCaptured(moveReport):
+            #    break
 
             kings = 0
             for i in range(8):
