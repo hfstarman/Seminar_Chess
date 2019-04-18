@@ -69,6 +69,7 @@ from ChessGUI_text import ChessGUI_text
 from ChessGUI_pygame import ChessGUI_pygame
 from ChessRules import ChessRules
 from ChessGameParams import TkinterGameSetupParams
+from player_amount_popup import Tkinter_playerAmount
 
 from optparse import OptionParser
 import time, random
@@ -94,7 +95,8 @@ class PythonChessMain:
             player2Type = 'randomAI'
             player2Color = 'black'
         else:
-            GameParams = TkinterGameSetupParams()
+            temp = Tkinter_playerAmount()
+            GameParams = temp.parameterPopup()
             (player1Name, player1Color, player1Type, player2Name, player2Color, player2Type) = GameParams.GetGameSetupParams()
 
         self.player = [0,0]
@@ -177,8 +179,8 @@ class PythonChessMain:
         turnCount = 0
         moveCount = 0
         movedToList = []
-        #change this too while(king exists)
-        while True: #CHANGED: while not self.Rules.IsCheckmate(self.Board.GetState(),self.player[currentPlayerIndex].color):
+        
+        while True:
             board = self.Board.GetState()
             currentColor = self.player[currentPlayerIndex].GetColor()
             #hardcoded so that player 1 is always white
@@ -241,6 +243,7 @@ class PythonChessMain:
                 currentPlayerIndex = (currentPlayerIndex+1)%2 #this will cause the currentPlayerIndex to toggle between 1 and 0
                 moveCount = 0
                 movedToList = []
+                print(board)
 
             if self.AIvsAI and self.AIpause:
                 time.sleep(self.AIpauseSeconds)

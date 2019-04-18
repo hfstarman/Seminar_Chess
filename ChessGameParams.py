@@ -14,7 +14,8 @@ from tkinter import *
 
 class TkinterGameSetupParams:
 
-	def __init__(self):
+	def __init__(self, playerAmount):
+		self.playerAmount = playerAmount
 		self.root = Tk()
 		self.root.title("Welcome to Python Chess!")
 		self.frame = Frame(self.root)
@@ -35,8 +36,8 @@ class TkinterGameSetupParams:
 		self.tk_player1Type = StringVar()
 		Radiobutton(self.frame, text="Human",variable=self.tk_player1Type,value="human").grid(row=2,column=2)
 		Radiobutton(self.frame, text="Random AI",variable=self.tk_player1Type,value="randomAI").grid(row=2,column=3)
-		Radiobutton(self.frame, text="Defense AI",variable=self.tk_player1Type,value="defenseAI").grid(row=2,column=4)
-		Radiobutton(self.frame, text="Offense AI",variable=self.tk_player1Type,value="offenseAI").grid(row=2,column=5)
+		#Radiobutton(self.frame, text="Defense AI",variable=self.tk_player1Type,value="defenseAI").grid(row=2,column=4)
+		#Radiobutton(self.frame, text="Offense AI",variable=self.tk_player1Type,value="offenseAI").grid(row=2,column=5)
 		self.tk_player1Type.set("human")
 			
 		
@@ -48,13 +49,21 @@ class TkinterGameSetupParams:
 		self.tk_player2Type = StringVar()
 		Radiobutton(self.frame, text="Human",variable=self.tk_player2Type,value="human").grid(row=3,column=2)
 		Radiobutton(self.frame, text="Random AI",variable=self.tk_player2Type,value="randomAI").grid(row=3,column=3)
-		Radiobutton(self.frame, text="Defense AI",variable=self.tk_player2Type,value="defenseAI").grid(row=3,column=4)
-		Radiobutton(self.frame, text="Offense AI",variable=self.tk_player2Type,value="offenseAI").grid(row=3,column=5)
-		self.tk_player2Type.set("defenseAI")
+		#Radiobutton(self.frame, text="Defense AI",variable=self.tk_player2Type,value="defenseAI").grid(row=3,column=4)
+		#Radiobutton(self.frame, text="Offense AI",variable=self.tk_player2Type,value="offenseAI").grid(row=3,column=5)
+		self.tk_player2Type.set("randomAI")
+
+
+		for i in range(int(playerAmount)):
+			default_name = "Player " + str(i+1)
+			Label(self.frame, text=default_name).grid(row=(i+5),column=0)
+			self.entry_playerName = Entry(self.frame)
+			self.entry_playerName.grid(row=(i+5),column=1)
+			self.entry_playerName.insert(ANCHOR,default_name)
 		
 
 		b = Button(self.frame, text="Start the Game!", command=self.ok)
-		b.grid(row=4,column=1)
+		b.grid(row=i+6,column=1)
 
 	def ok(self):
 		self.player1Name = self.entry_player1Name.get()
