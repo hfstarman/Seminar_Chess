@@ -15,7 +15,7 @@ from tkinter import *
 class TkinterGameSetupParams:
 
 	def __init__(self, playerAmount):
-		self.playerAmount = playerAmount
+		self.playerAmount = int(playerAmount)
 		self.root = Tk()
 		self.root.title("Welcome to Python Chess!")
 		self.frame = Frame(self.root)
@@ -54,12 +54,14 @@ class TkinterGameSetupParams:
 		self.tk_player2Type.set("randomAI")
 
 
-		for i in range(int(playerAmount)):
+		self.entry_playerNames = [None]*self.playerAmount
+
+		for i in range(self.playerAmount):
 			default_name = "Player " + str(i+1)
 			Label(self.frame, text=default_name).grid(row=(i+5),column=0)
-			self.entry_playerName = Entry(self.frame)
-			self.entry_playerName.grid(row=(i+5),column=1)
-			self.entry_playerName.insert(ANCHOR,default_name)
+			self.entry_playerNames[i] = Entry(self.frame)
+			self.entry_playerNames[i].grid(row=(i+5),column=1)
+			self.entry_playerNames[i].insert(ANCHOR,default_name)
 		
 
 		b = Button(self.frame, text="Start the Game!", command=self.ok)
@@ -73,6 +75,11 @@ class TkinterGameSetupParams:
 		self.player2Name = self.entry_player2Name.get()
 		self.player2Color = "black"
 		self.player2Type = self.tk_player2Type.get()
+
+		self.playerNames = []
+		for name_object in self.entry_playerNames:
+			self.playerNames.append(name_object.get())
+		print(self.playerNames)
 		
 		if self.player1Name != "" and self.player2Name != "":
 			self.frame.destroy()
@@ -87,7 +94,7 @@ class TkinterGameSetupParams:
 		self.root.wait_window(self.frame) #waits for frame to be destroyed
 		self.root.destroy() #noticed that with "text" gui mode, the tk window stayed...this gets rid of it.
 		return (self.player1Name, self.player1Color, self.player1Type, 
-				self.player2Name, self.player2Color, self.player2Type)
+				self.player2Name, self.player2Color, self.player2Type, self.playerAmount, self.playerNames)
 
 
 

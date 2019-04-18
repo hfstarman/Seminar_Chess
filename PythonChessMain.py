@@ -97,7 +97,16 @@ class PythonChessMain:
         else:
             temp = Tkinter_playerAmount()
             GameParams = temp.parameterPopup()
-            (player1Name, player1Color, player1Type, player2Name, player2Color, player2Type) = GameParams.GetGameSetupParams()
+            playerInfo = GameParams.GetGameSetupParams()
+            
+            player1Name = playerInfo[0]
+            player1Color = playerInfo[1]
+            player1Type = playerInfo[2]
+            player2Name = playerInfo[3]
+            player2Color = playerInfo[4]
+            player2Type = playerInfo[5]
+
+            #(player1Name, player1Color, player1Type, player2Name, player2Color, player2Type) = GameParams.GetGameSetupParams()
 
         self.player = [0,0]
         if player1Type == 'human':
