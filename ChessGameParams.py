@@ -79,7 +79,7 @@ class TkinterGameSetupParams:
 		self.playerNames = []
 		for name_object in self.entry_playerNames:
 			self.playerNames.append(name_object.get())
-		print(self.playerNames)
+		#print(self.playerNames)
 		
 		if self.player1Name != "" and self.player2Name != "":
 			self.frame.destroy()

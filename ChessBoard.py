@@ -119,15 +119,20 @@ class ChessBoard:
 			name = name + "queen"
 		if 'K' in p:
 			name = name + "king"
+
+		try:
+			num = int(p[-1])
+			name = name + ' ' + str(num)
+		except:
+			pass
 			
 		return name
 	
-	def MovePiece(self,moveTuple,movedToList):
+	def MovePiece(self,moveTuple):
 
 		if moveTuple == None:
 			return "Turn Passed"
-
-		movedToList.append(moveTuple[1])
+			
 
 		fromSquare_r = moveTuple[0][0]
 		fromSquare_c = moveTuple[0][1]

@@ -223,7 +223,7 @@ class ChessGUI_pygame:
 				sys.exit(0)
 
 			
-	def GetPlayerInput(self,board,currentColor, movedToList): #Let this function also check if ending turn
+	def GetPlayerInput(self,board,currentColor, currentPiece): #Let this function also check if ending turn
 		#returns ((from_row,from_col),(to_row,to_col))
 		fromSquareChosen = 0
 		toSquareChosen = 0
@@ -251,15 +251,12 @@ class ChessGUI_pygame:
 			if not fromSquareChosen and not toSquareChosen:
 				self.Draw(board)
 				if squareClicked != []:
-					#Check if this piece has already been moved
-					if squareClicked in movedToList:
-						continue
 					(r,c) = squareClicked
-					if currentColor == 'black' and 'b' in board[r][c]:
+					if currentColor == 'black' and currentPiece == board[r][c]:
 						if len(self.Rules.GetListOfValidMoves(board,currentColor,squareClicked))>0:
 							fromSquareChosen = 1
 							fromTuple = squareClicked
-					elif currentColor == 'white' and 'w' in board[r][c]:
+					elif currentColor == 'white' and currentPiece == board[r][c]:
 						if len(self.Rules.GetListOfValidMoves(board,currentColor,squareClicked))>0:
 							fromSquareChosen = 1
 							fromTuple = squareClicked
@@ -272,7 +269,6 @@ class ChessGUI_pygame:
 					if squareClicked in possibleDestinations:
 						toSquareChosen = 1
 						toTuple = squareClicked
-						movedToList.append(squareClicked) #Record ending location of moved piece
 					elif currentColor == 'black' and 'b' in board[r][c]:
 						if squareClicked == fromTuple:
 							fromSquareChosen = 0

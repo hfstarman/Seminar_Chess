@@ -98,13 +98,64 @@ class PythonChessMain:
             temp = Tkinter_playerAmount()
             GameParams = temp.parameterPopup()
             playerInfo = GameParams.GetGameSetupParams()
-            
+
             player1Name = playerInfo[0]
             player1Color = playerInfo[1]
             player1Type = playerInfo[2]
             player2Name = playerInfo[3]
             player2Color = playerInfo[4]
             player2Type = playerInfo[5]
+
+            self.playerAmount = playerInfo[6]
+            self.playerNamesList = playerInfo[-1]
+
+            #This area of the setup will create the controllerDict
+            #When  piece's abbreviation is put into the controllerDict
+            #then the name of the player which controls that piece is returned
+            #if the controller is 'None' then thats when the AI takes over
+            print(self.playerNamesList)
+            self.blackPieces = ['bR1','bT1','bB1','bQ','bK','bB2','bT2','bR2',
+                                'bP1','bP2','bP3','bP4','bP5','bP6','bP7','bP8']
+            self.whitePieces = ['wP1','wP2','wP3','wP4','wP5','wP6','wP7','wP8',
+                                'wR1','wT1','wB1','wQ','wK','wB2','wT2','wR2']
+
+            random.shuffle(self.playerNamesList)
+            random.shuffle(self.blackPieces)
+            random.shuffle(self.whitePieces)
+
+            #first half of player list will be the white people and the second half will control the blacks
+            white_people = self.playerNamesList[:len(self.playerNamesList)//2]
+            black_people = self.playerNamesList[len(self.playerNamesList)//2:]
+
+            self.controllerDict = {}
+            controller = ""
+            i = 0
+            for piece in self.whitePieces:
+                try:
+                    controller = white_people[i]
+                except:
+                    controller = None
+                
+                self.controllerDict[piece] = controller
+                if 'P' in piece:
+                    promoted_pawn = 'wQ' + piece[-1] #change this to be more general if we change abbr of pieces
+                    self.controllerDict[promoted_pawn] = controller
+
+                i += 1
+
+            i = 0
+            for piece in self.blackPieces:
+                try:
+                    controller = black_people[i]
+                except:
+                    controller = None
+                
+                self.controllerDict[piece] = controller
+                if 'P' in piece:
+                    promoted_pawn = 'bQ' + piece[-1] #change this to be more general if we change abbr of pieces
+                    self.controllerDict[promoted_pawn] = controller
+
+                i += 1
 
             #(player1Name, player1Color, player1Type, player2Name, player2Color, player2Type) = GameParams.GetGameSetupParams()
 
@@ -183,76 +234,120 @@ class PythonChessMain:
         self.guitype = 'text'
         self.Gui = ChessGUI_text()
 
+    def getWhitePieces(self):
+        white_list = []
+        board = self.Board.GetState()
+
+        for i in range(8):
+            for j in range(8):
+                if 'w' in board[i][j]:
+                    white_list.append(board[i][j])
+
+        return white_list
+
+
+    def getBlackPieces(self):
+        black_list = []
+        board = self.Board.GetState()
+        
+        for i in range(8):
+            for j in range(8):
+                if 'b' in board[i][j]:
+                    black_list.append(board[i][j])
+
+        return black_list
+
     def MainLoop(self):
         currentPlayerIndex = 0
         turnCount = 0
         moveCount = 0
         movedToList = []
+
+        print(self.controllerDict)
         
-        while True:
-            board = self.Board.GetState()
-            currentColor = self.player[currentPlayerIndex].GetColor()
-            #hardcoded so that player 1 is always white
-            if currentColor == 'white' and moveCount == 0:
-                turnCount = turnCount + 1
-            self.Gui.PrintMessage("")
-            baseMsg = "TURN %s - %s (%s)" % (str(turnCount),self.player[currentPlayerIndex].GetName(),currentColor)
-            self.Gui.PrintMessage("-----%s-----" % baseMsg)
-            self.Gui.Draw(board)
-            #Don't need to check for this (probably)
-            if self.Rules.IsInCheck(board,currentColor):
-                self.Gui.PrintMessage("Warning..."+self.player[currentPlayerIndex].GetName()+" ("+self.player[currentPlayerIndex].GetColor()+") is in check!")
+        isKingCaptured = False
+        while not isKingCaptured:
 
-            if self.player[currentPlayerIndex].GetType() == 'AI':
-                myPieces = self.player[currentPlayerIndex].GetMyPiecesWithLegalMoves(self.Board.GetState(),currentColor,movedToList)
-                moves_out = []
-                if len(myPieces) < 1:
-                    return None
-                for (x,y) in myPieces:
-                    piece = self.Board.GetState()[x][y]
-                    move = self.player[currentPlayerIndex].move_set[(piece, str(x), str(y))]  #string
-                    if random.random() < 0.0001:
-                        legalMoves = self.Rules.GetListOfValidMoves(self.Board.GetState(),currentColor,(x,y))
-                        move = legalMoves[random.randint(0,len(legalMoves)-1)]
-                    if self.Rules.IsLegalMove(self.Board.GetState(), currentColor, (x,y), move):
-                        move_out = ((x,y), move)
-                    else:
-                        move_out = ((x,y), (-1,-1))
-                    moveReport = self.Board.MovePiece(move_out, movedToList) #moveReport = string like "White Bishop moves from A1 to C3" (+) "and captures ___!"
+            self.whitePieces = self.getWhitePieces()
+            self.blackPieces = self.getBlackPieces()
+            random.shuffle(self.whitePieces)
+            random.shuffle(self.blackPieces)
+            piecesAvailableToColor = [self.whitePieces, self.blackPieces]
+
+            for currentPiece in piecesAvailableToColor[currentPlayerIndex]:
+                board = self.Board.GetState()
+                currentColor = self.player[currentPlayerIndex].GetColor()
+                #hardcoded so that player 1 is always white
+                if currentColor == 'white' and moveCount == 0:
+                    turnCount = turnCount + 1
+                self.Gui.PrintMessage("")
+                baseMsg = "TURN %s - %s (%s)" % (str(turnCount),self.controllerDict[currentPiece],self.Board.GetFullString(currentPiece))
+                self.Gui.PrintMessage("-----%s-----" % baseMsg)
+                self.Gui.Draw(board)
+                
+                if self.Rules.IsInCheck(board,currentColor):
+                    self.Gui.PrintMessage("Warning..."+self.player[currentPlayerIndex].GetName()+" ("+self.player[currentPlayerIndex].GetColor()+") is in check!")
+
+                #When there is no controller then the AI takes over that piece
+                if self.controllerDict[currentPiece] == None:
+                    #the AI will probably fuck up with the changes
+                    #so I wanted to disregard this part of the code for now
+                    self.Gui.PrintMessage("skipping AI's turn")
+
+                    # myPieces = self.player[currentPlayerIndex].GetMyPiecesWithLegalMoves(self.Board.GetState(),currentColor,movedToList)
+                    # moves_out = []
+                    # if len(myPieces) < 1:
+                    #     return None
+                    # for (x,y) in myPieces:
+                    #     piece = self.Board.GetState()[x][y]
+                    #     move = self.player[currentPlayerIndex].move_set[(piece, str(x), str(y))]  #string
+                    #     if random.random() < 0.0001:
+                    #         legalMoves = self.Rules.GetListOfValidMoves(self.Board.GetState(),currentColor,(x,y))
+                    #         move = legalMoves[random.randint(0,len(legalMoves)-1)]
+                    #     if self.Rules.IsLegalMove(self.Board.GetState(), currentColor, (x,y), move):
+                    #         move_out = ((x,y), move)
+                    #     else:
+                    #         move_out = ((x,y), (-1,-1))
+                    #     moveReport = self.Board.MovePiece(move_out, movedToList) #moveReport = string like "White Bishop moves from A1 to C3" (+) "and captures ___!"
+                    #     self.Gui.PrintMessage(moveReport)
+                    # #moveTuples = self.player[currentPlayerIndex].get_move_AI(self.Board.GetState(), currentColor, movedToList)
+                    # moveTuple = None
+                    # #for move in moveTuples:
+                    # #    if move[1] == (-1,-1):
+                    # #        continue
+                    # #    moveReport = self.Board.MovePiece(move, movedToList) #moveReport = string like "White Bishop moves from A1 to C3" (+) "and captures ___!"
+                    # #    self.Gui.PrintMessage(moveReport)
+                else:
+                    moveTuple = self.Gui.GetPlayerInput(board,currentColor, currentPiece)
+                    moveReport = self.Board.MovePiece(moveTuple) #moveReport = string like "White Bishop moves from A1 to C3" (+) "and captures ___!"
                     self.Gui.PrintMessage(moveReport)
-                #moveTuples = self.player[currentPlayerIndex].get_move_AI(self.Board.GetState(), currentColor, movedToList)
-                moveTuple = None
-                #for move in moveTuples:
-                #    if move[1] == (-1,-1):
-                #        continue
-                #    moveReport = self.Board.MovePiece(move, movedToList) #moveReport = string like "White Bishop moves from A1 to C3" (+) "and captures ___!"
-                #    self.Gui.PrintMessage(moveReport)
-            else:
-                moveTuple = self.Gui.GetPlayerInput(board,currentColor, movedToList)
-                moveReport = self.Board.MovePiece(moveTuple, movedToList) #moveReport = string like "White Bishop moves from A1 to C3" (+) "and captures ___!"
-                self.Gui.PrintMessage(moveReport)
 
-            #If a king has been captured then end the game
-            #if self.Rules.isKingCaptured(moveReport):
-            #    break
+                #If a king has been captured then end the game
+                #if self.Rules.isKingCaptured(moveReport):
+                #    break
 
-            kings = 0
-            for i in range(8):
-                for j in range(8):
-                    if board[i][j] == 'bK' or board[i][j] == 'wK':
-                        kings += 1
-            if kings != 2:
-                break
+                kings = 0
+                for i in range(8):
+                    for j in range(8):
+                        if board[i][j] == 'bK' or board[i][j] == 'wK':
+                            kings += 1
+                if kings != 2:
+                    isKingCaptured = False
+                    break
+
+
+
+                moveCount += 1
 
             #These lines changed the current player
             #Right now its just hardcoded at 16 moves per turn but
             #I'm devising a moveList which will only allow each piece to move once per turn
-            moveCount += 1
-            if moveCount > 15 or moveTuple == None:
-                currentPlayerIndex = (currentPlayerIndex+1)%2 #this will cause the currentPlayerIndex to toggle between 1 and 0
-                moveCount = 0
-                movedToList = []
-                print(board)
+            #moveCount += 1
+            #if moveCount > 15 or moveTuple == None:
+            currentPlayerIndex = (currentPlayerIndex+1)%2 #this will cause the currentPlayerIndex to toggle between 1 and 0
+            moveCount = 0
+            movedToList = []
+            #print(board)
 
             if self.AIvsAI and self.AIpause:
                 time.sleep(self.AIpauseSeconds)
