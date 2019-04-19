@@ -193,9 +193,9 @@ class ChessGUI_pygame:
 					self.screen.blit(self.white_king,(screenX,screenY))
 
 		#Add end turn button
-		pygame.draw.rect(self.screen, blue, (750, 430, 70, 40))
+		pygame.draw.rect(self.screen, blue, (760, 440, 70, 40))
 		textSurface, textRect = self.text_objects("End Turn", self.fontDefault)
-		textRect.center = ((750+(70/2)), (430+(40/2)))
+		textRect.center = ((760+(70/2)), (440+(40/2)))
 		self.screen.blit(textSurface, textRect)
 			
 		pygame.display.flip()

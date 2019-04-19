@@ -261,7 +261,6 @@ class PythonChessMain:
         currentPlayerIndex = 0
         turnCount = 0
         moveCount = 0
-        movedToList = []
 
         print(self.controllerDict)
         
@@ -322,32 +321,20 @@ class PythonChessMain:
                     moveReport = self.Board.MovePiece(moveTuple) #moveReport = string like "White Bishop moves from A1 to C3" (+) "and captures ___!"
                     self.Gui.PrintMessage(moveReport)
 
-                #If a king has been captured then end the game
-                #if self.Rules.isKingCaptured(moveReport):
-                #    break
-
                 kings = 0
                 for i in range(8):
                     for j in range(8):
                         if board[i][j] == 'bK' or board[i][j] == 'wK':
                             kings += 1
                 if kings != 2:
-                    isKingCaptured = False
+                    isKingCaptured = True
                     break
-
-
 
                 moveCount += 1
 
-            #These lines changed the current player
-            #Right now its just hardcoded at 16 moves per turn but
-            #I'm devising a moveList which will only allow each piece to move once per turn
-            #moveCount += 1
-            #if moveCount > 15 or moveTuple == None:
+
             currentPlayerIndex = (currentPlayerIndex+1)%2 #this will cause the currentPlayerIndex to toggle between 1 and 0
             moveCount = 0
-            movedToList = []
-            #print(board)
 
             if self.AIvsAI and self.AIpause:
                 time.sleep(self.AIpauseSeconds)
