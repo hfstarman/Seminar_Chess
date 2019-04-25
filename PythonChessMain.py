@@ -63,7 +63,7 @@
 """
 
 from ChessBoard import ChessBoard
-from ChessAI import ChessAI_random, ChessAI_defense, ChessAI_offense
+from ChessAI import likeOMGimSoooooRandumbAI, ChessAI_random, ChessAI_defense, ChessAI_offense
 from ChessPlayer import ChessPlayer
 from ChessGUI_text import ChessGUI_text
 from ChessGUI_pygame import ChessGUI_pygame
@@ -288,38 +288,15 @@ class PythonChessMain:
                     self.Gui.PrintMessage("Warning..."+self.player[currentPlayerIndex].GetName()+" ("+self.player[currentPlayerIndex].GetColor()+") is in check!")
 
                 #When there is no controller then the AI takes over that piece
+                moveTuple = None
                 if self.controllerDict[currentPiece] == None:
-                    #the AI will probably fuck up with the changes
-                    #so I wanted to disregard this part of the code for now
-                    self.Gui.PrintMessage("skipping AI's turn")
-
-                    # myPieces = self.player[currentPlayerIndex].GetMyPiecesWithLegalMoves(self.Board.GetState(),currentColor,movedToList)
-                    # moves_out = []
-                    # if len(myPieces) < 1:
-                    #     return None
-                    # for (x,y) in myPieces:
-                    #     piece = self.Board.GetState()[x][y]
-                    #     move = self.player[currentPlayerIndex].move_set[(piece, str(x), str(y))]  #string
-                    #     if random.random() < 0.0001:
-                    #         legalMoves = self.Rules.GetListOfValidMoves(self.Board.GetState(),currentColor,(x,y))
-                    #         move = legalMoves[random.randint(0,len(legalMoves)-1)]
-                    #     if self.Rules.IsLegalMove(self.Board.GetState(), currentColor, (x,y), move):
-                    #         move_out = ((x,y), move)
-                    #     else:
-                    #         move_out = ((x,y), (-1,-1))
-                    #     moveReport = self.Board.MovePiece(move_out, movedToList) #moveReport = string like "White Bishop moves from A1 to C3" (+) "and captures ___!"
-                    #     self.Gui.PrintMessage(moveReport)
-                    # #moveTuples = self.player[currentPlayerIndex].get_move_AI(self.Board.GetState(), currentColor, movedToList)
-                    # moveTuple = None
-                    # #for move in moveTuples:
-                    # #    if move[1] == (-1,-1):
-                    # #        continue
-                    # #    moveReport = self.Board.MovePiece(move, movedToList) #moveReport = string like "White Bishop moves from A1 to C3" (+) "and captures ___!"
-                    # #    self.Gui.PrintMessage(moveReport)
+                    time.sleep(.75)
+                    moveTuple = likeOMGimSoooooRandumbAI(currentPiece, board).randomLegalMoveTuple()
                 else:
                     moveTuple = self.Gui.GetPlayerInput(board,currentColor, currentPiece)
-                    moveReport = self.Board.MovePiece(moveTuple) #moveReport = string like "White Bishop moves from A1 to C3" (+) "and captures ___!"
-                    self.Gui.PrintMessage(moveReport)
+
+                moveReport = self.Board.MovePiece(moveTuple) #moveReport = string like "White Bishop moves from A1 to C3" (+) "and captures ___!"
+                self.Gui.PrintMessage(moveReport)
 
                 kings = 0
                 for i in range(8):
@@ -341,8 +318,8 @@ class PythonChessMain:
 
 
         self.Gui.PrintMessage("KING CAPTURED!")
-        winnerIndex = (currentPlayerIndex)%2
-        self.Gui.PrintMessage(self.player[winnerIndex].GetName()+" ("+self.player[winnerIndex].GetColor()+") won the game!")
+        winnerIndex = (currentPlayerIndex+1)%2
+        self.Gui.PrintMessage(self.player[winnerIndex].GetColor()+" won the game!")
         self.Gui.EndGame(board)
         self.winnerIndex = winnerIndex
         self.turnCount = turnCount

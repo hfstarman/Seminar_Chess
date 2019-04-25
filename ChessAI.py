@@ -14,6 +14,61 @@ import random
 import datetime
 import sys
 
+class hankAI:
+    def __init__(self, pieceName, board):
+        self.type = 'AI' #might not need this
+        self.pieceName = pieceName
+        self.board = board
+        self.color = self.getColor()
+        self.Rules = ChessRules()
+
+    def getType(self):
+        return self.type
+
+    def getPieceName(self):
+        return self.pieceName
+
+    def getColor(self):
+        if 'b' in self.pieceName:
+            return 'black'
+        else:
+            return 'white'
+
+class likeOMGimSoooooRandumbAI(hankAI):
+
+    # def __init__(self, pieceName, board):
+    #     self.type = 'AI' #might not need this
+    #     self.pieceName = pieceName
+    #     self.board = board
+    #     self.color = self.getColor()
+    #     self.Rules = ChessRules()
+
+    #do something
+    def testMethod(self):
+        print(self.pieceName)
+
+    def randomLegalMoveTuple(self):
+
+        #30% chance of not moving
+        if random.randint(1,10) <= 3:
+            return None
+
+        current_coordinate = ChessBoard.getCoordinateByPieceName(self.pieceName, self.board)
+        moveList = self.Rules.GetListOfValidMoves(self.board, self.color, current_coordinate)
+
+        #no move is possible
+        if moveList == []:
+            return None
+
+        random.shuffle(moveList)
+
+        #returns a move tuple
+        return (current_coordinate, moveList[0])
+
+    # def move_AI(self):
+    #     moveTuple = self.randomLegalMoveTuple()
+    #     return ChessBoard.movePiece(moveTuple)
+
 class ChessAI:
     def __init__(self,name,color):
         #print "In ChessAI __init__"

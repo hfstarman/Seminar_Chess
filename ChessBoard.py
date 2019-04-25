@@ -68,6 +68,17 @@ class ChessBoard:
 			
 	def GetState(self):
 		return self.squares
+
+	#Returns the coordiantes of a piece as a tuple
+	#If the piece was not found then None is returned
+	def getCoordinateByPieceName(pieceName, board):
+
+		for r in range(8):
+			for c in range(8):
+				if pieceName == board[r][c]:
+					return (r,c)
+
+		return None
 		
 	def ConvertMoveTupleListToAlgebraicNotation(self,moveTupleList):	
 		newTupleList = []
