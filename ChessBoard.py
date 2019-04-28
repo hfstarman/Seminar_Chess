@@ -79,7 +79,29 @@ class ChessBoard:
 					return (r,c)
 
 		return None
-		
+
+	def getScore(pieceName, board):
+
+		alive = False
+		Won = False
+
+		piece_color = pieceName[0]
+		king = piece_color + 'K'
+
+		if getCoordinateByPieceName(pieceName) != None:
+			alive = True
+
+		if getCoordinateByPieceName(king) != None:
+			Won = True
+
+		if Won == False:
+			return 0
+		if alive:
+			return 10
+		else:
+			return 3
+
+
 	def ConvertMoveTupleListToAlgebraicNotation(self,moveTupleList):	
 		newTupleList = []
 		for move in moveTupleList:
