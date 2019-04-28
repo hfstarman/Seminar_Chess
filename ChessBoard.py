@@ -80,7 +80,7 @@ class ChessBoard:
 
 		return None
 
-	def getScore(pieceName, board):
+	def getScore(self, pieceName, board):
 
 		alive = False
 		Won = False
@@ -100,6 +100,19 @@ class ChessBoard:
 			return 10
 		else:
 			return 3
+
+	def getCaptureValue(self, pieceName):
+
+		if 'P' in pieceName:
+			return 1
+		if 'T' in pieceName:
+			return 3
+		if 'B' in pieceName:
+			return 3
+		if 'R' in pieceName:
+			return 5
+		if 'Q' in pieceName:
+			return 9
 
 
 	def ConvertMoveTupleListToAlgebraicNotation(self,moveTupleList):	
