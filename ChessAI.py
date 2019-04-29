@@ -36,14 +36,6 @@ class hankAI:
 
 class likeOMGimSoooooRandumbAI(hankAI):
 
-    # def __init__(self, pieceName, board):
-    #     self.type = 'AI' #might not need this
-    #     self.pieceName = pieceName
-    #     self.board = board
-    #     self.color = self.getColor()
-    #     self.Rules = ChessRules()
-
-    #do something
     def testMethod(self):
         print(self.pieceName)
 

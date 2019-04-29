@@ -113,11 +113,15 @@ class PythonChessMain:
             #When  piece's abbreviation is put into the controllerDict
             #then the name of the player which controls that piece is returned
             #if the controller is 'None' then thats when the AI takes over
-            print(self.playerNamesList)
             self.blackPieces = ['bR1','bT1','bB1','bQ','bK','bB2','bT2','bR2',
                                 'bP1','bP2','bP3','bP4','bP5','bP6','bP7','bP8']
             self.whitePieces = ['wP1','wP2','wP3','wP4','wP5','wP6','wP7','wP8',
                                 'wR1','wT1','wB1','wQ','wK','wB2','wT2','wR2']
+
+            self.captureDict = {}
+            for piece in (self.blackPieces+self.whitePieces):
+                self.captureDict[piece] = 0
+
 
             random.shuffle(self.playerNamesList)
             random.shuffle(self.blackPieces)
@@ -262,7 +266,7 @@ class PythonChessMain:
         turnCount = 0
         moveCount = 0
 
-        print(self.controllerDict)
+        #print(self.controllerDict)
         
         isKingCaptured = False
         while not isKingCaptured:
@@ -290,12 +294,12 @@ class PythonChessMain:
                 #When there is no controller then the AI takes over that piece
                 moveTuple = None
                 if self.controllerDict[currentPiece] == None:
-                    time.sleep(.75)
+                    #time.sleep(.75)
                     moveTuple = likeOMGimSoooooRandumbAI(currentPiece, board).randomLegalMoveTuple()
                 else:
                     moveTuple = self.Gui.GetPlayerInput(board,currentColor, currentPiece)
 
-                moveReport = self.Board.MovePiece(moveTuple) #moveReport = string like "White Bishop moves from A1 to C3" (+) "and captures ___!"
+                moveReport = self.Board.MovePiece(moveTuple, self.captureDict) #moveReport = string like "White Bishop moves from A1 to C3" (+) "and captures ___!"
                 self.Gui.PrintMessage(moveReport)
 
                 kings = 0
@@ -316,7 +320,7 @@ class PythonChessMain:
             if self.AIvsAI and self.AIpause:
                 time.sleep(self.AIpauseSeconds)
 
-
+        print(self.captureDict)
         self.Gui.PrintMessage("KING CAPTURED!")
         winnerIndex = (currentPlayerIndex+1)%2
         self.Gui.PrintMessage(self.player[winnerIndex].GetColor()+" won the game!")

@@ -88,10 +88,10 @@ class ChessBoard:
 		piece_color = pieceName[0]
 		king = piece_color + 'K'
 
-		if getCoordinateByPieceName(pieceName) != None:
+		if self.getCoordinateByPieceName(pieceName, board) != None:
 			alive = True
 
-		if getCoordinateByPieceName(king) != None:
+		if self.getCoordinateByPieceName(king, board) != None:
 			Won = True
 
 		if Won == False:
@@ -113,6 +113,12 @@ class ChessBoard:
 			return 5
 		if 'Q' in pieceName:
 			return 9
+
+	def addCapturePoints(self, capturingPieceName, capturedPieceName, captureDict):
+		if 'Q' in capturingPieceName and len(capturingPieceName) > 2:
+			capturingPieceName = capturingPieceName[0] + 'P' + capturingPieceName[-1]
+
+		captureDict[capturingPieceName] += self.getCaptureValue(capturedPieceName)
 
 
 	def ConvertMoveTupleListToAlgebraicNotation(self,moveTupleList):	
@@ -174,7 +180,7 @@ class ChessBoard:
 			
 		return name
 	
-	def MovePiece(self,moveTuple):
+	def MovePiece(self,moveTuple,captureDict):
 
 		if moveTuple == None:
 			return "Turn Passed"
@@ -204,6 +210,7 @@ class ChessBoard:
 			messageString = fromPiece_fullString+ " moves from "+self.ConvertToAlgebraicNotation(moveTuple[0])+\
 						    " to "+self.ConvertToAlgebraicNotation(moveTuple[1])
 		else:
+			self.addCapturePoints(fromPiece, toPiece, captureDict)
 			messageString = fromPiece_fullString+ " from "+self.ConvertToAlgebraicNotation(moveTuple[0])+\
 						" captures "+toPiece_fullString+" at "+self.ConvertToAlgebraicNotation(moveTuple[1])+"!"
 		
