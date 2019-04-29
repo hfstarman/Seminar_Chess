@@ -4,11 +4,11 @@
  File name: ChessBoard.py
  Description:  Board layout; contains what pieces are present
 	at each square.
-	
+
  Copyright (C) 2009 Steve Osborne, srosborne (at) gmail.com
  http://yakinikuman.wordpress.com/
  """
- 
+
 import string
 
 class ChessBoard:
@@ -21,7 +21,7 @@ class ChessBoard:
 						['e','e','e','e','e','e','e','e'],\
 						['e','e','e','e','e','e','e','e'],\
 						['e','e','e','e','e','e','e','e']]
-						
+
 		if setupType == 0:
 			self.squares[0] = ['bR1','bT1','bB1','bQ','bK','bB2','bT2','bR2']
 			self.squares[1] = ['bP1','bP2','bP3','bP4','bP5','bP6','bP7','bP8']
@@ -64,14 +64,14 @@ class ChessBoard:
 			self.squares[4] = ['e','e','bB','e','e','e','wR','e']
 			self.squares[5] = ['e','e','e','e','e','e','e','e']
 			self.squares[6] = ['e','e','e','e','e','e','e','e']
-			self.squares[7] = ['e','e','e','wK','wQ','e','wT','e']			
-			
+			self.squares[7] = ['e','e','e','wK','wQ','e','wT','e']
+
 	def GetState(self):
 		return self.squares
 
 	#Returns the coordiantes of a piece as a tuple
 	#If the piece was not found then None is returned
-	def getCoordinateByPieceName(pieceName, board):
+	def getCoordinateByPieceName(self,pieceName, board):
 
 		for r in range(8):
 			for c in range(8):
@@ -88,10 +88,10 @@ class ChessBoard:
 		piece_color = pieceName[0]
 		king = piece_color + 'K'
 
-		if getCoordinateByPieceName(pieceName) != None:
+		if self.getCoordinateByPieceName(pieceName, board) != None:
 			alive = True
 
-		if getCoordinateByPieceName(king) != None:
+		if self.getCoordinateByPieceName(king, board) != None:
 			Won = True
 
 		if Won == False:
@@ -115,12 +115,12 @@ class ChessBoard:
 			return 9
 
 
-	def ConvertMoveTupleListToAlgebraicNotation(self,moveTupleList):	
+	def ConvertMoveTupleListToAlgebraicNotation(self,moveTupleList):
 		newTupleList = []
 		for move in moveTupleList:
 			newTupleList.append((self.ConvertToAlgebraicNotation(move[0]),self.ConvertToAlgebraicNotation(move[1])))
 		return newTupleList
-	
+
 	def ConvertSquareListToAlgebraicNotation(self,list):
 		newList = []
 		for square in list:
@@ -133,26 +133,26 @@ class ChessBoard:
 		#Algebraic notation starts in the lower left and uses "a..h" for the column.
 		(row,col) = xxx_todo_changeme
 		return  self.ConvertToAlgebraicNotation_col(col) + self.ConvertToAlgebraicNotation_row(row)
-	
+
 	def ConvertToAlgebraicNotation_row(self,row):
 		#(row,col) format used in Python Chess code starts at (0,0) in the upper left.
-		#Algebraic notation starts in the lower left and uses "a..h" for the column.	
+		#Algebraic notation starts in the lower left and uses "a..h" for the column.
 		B = ['8','7','6','5','4','3','2','1']
 		return B[row]
-		
+
 	def ConvertToAlgebraicNotation_col(self,col):
 		#(row,col) format used in Python Chess code starts at (0,0) in the upper left.
-		#Algebraic notation starts in the lower left and uses "a..h" for the column.	
+		#Algebraic notation starts in the lower left and uses "a..h" for the column.
 		A = ['a','b','c','d','e','f','g','h']
 		return A[col]
 
-		
+
 	def GetFullString(self,p):
 		if 'b' in p:
 			name = "black "
 		else:
 			name = "white "
-			
+
 		if 'P' in p:
 			name = name + "pawn"
 		if 'R' in p:
@@ -171,14 +171,14 @@ class ChessBoard:
 			name = name + ' ' + str(num)
 		except:
 			pass
-			
+
 		return name
-	
+
 	def MovePiece(self,moveTuple):
 
 		if moveTuple == None:
 			return "Turn Passed"
-			
+
 
 		fromSquare_r = moveTuple[0][0]
 		fromSquare_c = moveTuple[0][1]
@@ -199,28 +199,28 @@ class ChessBoard:
 			self.squares[toSquare_r][toSquare_c] = 'wQ' + fromPiece[-1] #Add the pawn's Number
 		elif 'bP' in fromPiece and toSquare_r == 7:
 			self.squares[toSquare_r][toSquare_c] = 'bQ' + fromPiece[-1]
-		
+
 		if toPiece == 'e':
 			messageString = fromPiece_fullString+ " moves from "+self.ConvertToAlgebraicNotation(moveTuple[0])+\
 						    " to "+self.ConvertToAlgebraicNotation(moveTuple[1])
 		else:
 			messageString = fromPiece_fullString+ " from "+self.ConvertToAlgebraicNotation(moveTuple[0])+\
 						" captures "+toPiece_fullString+" at "+self.ConvertToAlgebraicNotation(moveTuple[1])+"!"
-		
+
 		#capitalize first character of messageString
 		messageString = messageString[0].upper() +messageString[1:len(messageString)] #CHANGED: messageString = string.upper(messageString[0])+messageString[1:len(messageString)]
-		
+
 		return messageString
 
 if __name__ == "__main__":
-	
+
 	cb = ChessBoard(0)
 	board1 = cb.GetState()
 	for r in range(8):
 		for c in range(8):
 			print(board1[r][c], end=' ')
 		print("")
-		
+
 	print("Move piece test...")
 	cb.MovePiece(((0,0),(4,4)),[])
 	board2 = cb.GetState()

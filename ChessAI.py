@@ -34,6 +34,70 @@ class hankAI:
         else:
             return 'white'
 
+    def minimax(self, piece, board, color):
+        # Chance for random move to progress game
+        cur = None
+        for i in range(8):
+            for j in range(8):
+                if board[i][j] == piece:
+                    cur = (i,j)
+        legalMoves = self.Rules.GetListOfValidMoves(board,color,cur)
+        if random.random() < 0.0001:
+            move = legalMoves[random.randint(0,len(legalMoves)-1)]
+            return move
+        # Otherwise do minimax
+        color1="black"
+        if color == "black":
+            color1="white"
+        best_move = None
+        best_score = 0
+        for move in legalMoves:
+            newBoard = ChessBoard()
+            for i in range(8):
+                for j in range(8):
+                    newBoard.squares[i][j] = board[i][j]
+            board1 = newBoard.GetState()
+            moveTuple = (cur, move)
+            newBoard.MovePiece(moveTuple)
+            board1 = newBoard.GetState()
+            myPieces = self.GetMyPiecesWithLegalMoves(board1,color1)
+            for (x,y) in myPieces:
+                piece = board1[x][y]
+                legalMoves1 = self.Rules.GetListOfValidMoves(board1,color1,(x,y))
+                if len(legalMoves1) == 0:
+                    continue
+                move1 = legalMoves1[random.randint(0,len(legalMoves1)-1)]
+                moveTuple = ((x,y), move1)
+                newBoard.MovePiece(moveTuple)
+            score = newBoard.getScore(piece, newBoard.GetState())
+            if score > best_score:
+                best_score = score
+                best_move = move
+        print("best move", (cur, best_move))
+        if best_move == None:
+            return None
+        return (cur, best_move)
+
+    def GetMyPiecesWithLegalMoves(self,board,color):
+        #print "In ChessAI_random.GetMyPiecesWithLegalMoves"
+        if color == "black":
+            myColor = 'b'
+            enemyColor = 'w'
+        else:
+            myColor = 'w'
+            enemyColor = 'b'
+
+        #get list of my pieces
+        myPieces = []
+        for row in range(8):
+            for col in range(8):
+                piece = board[row][col]
+                if myColor in piece:
+                    if len(self.Rules.GetListOfValidMoves(board,color,(row,col))) > 0 and (row,col):
+                        myPieces.append((row,col))
+
+        return myPieces
+
 class likeOMGimSoooooRandumbAI(hankAI):
 
     # def __init__(self, pieceName, board):
@@ -121,6 +185,11 @@ class ChessAI_random(ChessAI):
             value = (int(line[3]), int(line[4].strip()))
             self.move_set[key] = value
         f.close()
+
+
+
+
+
 
     def generate_random_policies(self):
         pieces = ['bR1','bT1','bB1','bQ','bK','bB2','bT2','bR2',
