@@ -63,7 +63,7 @@
 """
 
 from ChessBoard import ChessBoard
-from ChessAI import likeOMGimSoooooRandumbAI, ChessAI_random, ChessAI_defense, ChessAI_offense
+from ChessAI import likeOMGimSoooooRandumbAI, ChessAI_random, ChessAI_defense, ChessAI_offense, hankAI
 from ChessPlayer import ChessPlayer
 from ChessGUI_text import ChessGUI_text
 from ChessGUI_pygame import ChessGUI_pygame
@@ -139,7 +139,7 @@ class PythonChessMain:
                     controller = white_people[i]
                 except:
                     controller = None
-                
+
                 self.controllerDict[piece] = controller
                 if 'P' in piece:
                     promoted_pawn = 'wQ' + piece[-1] #change this to be more general if we change abbr of pieces
@@ -153,7 +153,7 @@ class PythonChessMain:
                     controller = black_people[i]
                 except:
                     controller = None
-                
+
                 self.controllerDict[piece] = controller
                 if 'P' in piece:
                     promoted_pawn = 'bQ' + piece[-1] #change this to be more general if we change abbr of pieces
@@ -253,7 +253,7 @@ class PythonChessMain:
     def getBlackPieces(self):
         black_list = []
         board = self.Board.GetState()
-        
+
         for i in range(8):
             for j in range(8):
                 if 'b' in board[i][j]:
@@ -266,8 +266,6 @@ class PythonChessMain:
         turnCount = 0
         moveCount = 0
 
-        #print(self.controllerDict)
-        
         isKingCaptured = False
         while not isKingCaptured:
 
@@ -287,19 +285,22 @@ class PythonChessMain:
                 baseMsg = "TURN %s - %s (%s)" % (str(turnCount),self.controllerDict[currentPiece],self.Board.GetFullString(currentPiece))
                 self.Gui.PrintMessage("-----%s-----" % baseMsg)
                 self.Gui.Draw(board)
-                
+
                 if self.Rules.IsInCheck(board,currentColor):
                     self.Gui.PrintMessage("Warning..."+self.player[currentPlayerIndex].GetName()+" ("+self.player[currentPlayerIndex].GetColor()+") is in check!")
 
                 #When there is no controller then the AI takes over that piece
                 moveTuple = None
                 if self.controllerDict[currentPiece] == None:
-                    #time.sleep(.75)
-                    moveTuple = likeOMGimSoooooRandumbAI(currentPiece, board).randomLegalMoveTuple()
+                    hank = hankAI(currentPiece, board)
+                    moveTuple = hank.minimax(currentPiece, board, currentColor)
+                    time.sleep(.75)
+                    # moveTuple = likeOMGimSoooooRandumbAI(currentPiece, board).randomLegalMoveTuple()
                 else:
                     moveTuple = self.Gui.GetPlayerInput(board,currentColor, currentPiece)
+                    
+                moveReport = self.Board.MovePiece(moveTuple) #moveReport = string like "White Bishop moves from A1 to C3" (+) "and captures ___!"
 
-                moveReport = self.Board.MovePiece(moveTuple, self.captureDict) #moveReport = string like "White Bishop moves from A1 to C3" (+) "and captures ___!"
                 self.Gui.PrintMessage(moveReport)
 
                 kings = 0
