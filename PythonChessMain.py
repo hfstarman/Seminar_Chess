@@ -294,8 +294,7 @@ class PythonChessMain:
                 if self.controllerDict[currentPiece] == None:
                     hank = hankAI(currentPiece, board)
                     moveTuple = hank.minimax(currentPiece, board, currentColor)
-                    time.sleep(.25)
-                    # moveTuple = likeOMGimSoooooRandumbAI(currentPiece, board).randomLegalMoveTuple()
+                    time.sleep(.1)
                 else:
                     moveTuple = self.Gui.GetPlayerInput(board,currentColor, currentPiece)
                     

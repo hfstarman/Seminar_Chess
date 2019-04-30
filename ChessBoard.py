@@ -103,6 +103,9 @@ class ChessBoard:
 
 	def getCaptureValue(self, pieceName):
 
+		if 'e' == pieceName:
+			return 0
+
 		if 'P' in pieceName:
 			return 1
 		if 'T' in pieceName:
@@ -123,14 +126,14 @@ class ChessBoard:
 	def addCapturePoints(self, capturingPieceName, capturedPieceName, captureDict):
 		if 'e' == capturedPieceName:
 			return
-		print(capturedPieceName)
+		#print(capturedPieceName)
 
 		if 'Q' in capturingPieceName and len(capturingPieceName) > 2:
 			capturingPieceName = capturingPieceName[0] + 'P' + capturingPieceName[-1]
 
 		captureDict[capturingPieceName] += self.getCaptureValue(capturedPieceName)
-		print(capturedPieceName, " received ", self.getCaptureValue(capturedPieceName), " points")
-		print("Total: ", captureDict[capturingPieceName])
+		#print(capturedPieceName, " received ", self.getCaptureValue(capturedPieceName), " points")
+		#print("Total: ", captureDict[capturingPieceName])
 
 
 	def ConvertMoveTupleListToAlgebraicNotation(self,moveTupleList):
