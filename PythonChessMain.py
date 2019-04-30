@@ -294,12 +294,12 @@ class PythonChessMain:
                 if self.controllerDict[currentPiece] == None:
                     hank = hankAI(currentPiece, board)
                     moveTuple = hank.minimax(currentPiece, board, currentColor)
-                    time.sleep(.75)
+                    time.sleep(.25)
                     # moveTuple = likeOMGimSoooooRandumbAI(currentPiece, board).randomLegalMoveTuple()
                 else:
                     moveTuple = self.Gui.GetPlayerInput(board,currentColor, currentPiece)
                     
-                moveReport = self.Board.MovePiece(moveTuple) #moveReport = string like "White Bishop moves from A1 to C3" (+) "and captures ___!"
+                moveReport = self.Board.MovePiece(moveTuple, self.captureDict) #moveReport = string like "White Bishop moves from A1 to C3" (+) "and captures ___!"
 
                 self.Gui.PrintMessage(moveReport)
 

@@ -58,7 +58,7 @@ class hankAI:
                     newBoard.squares[i][j] = board[i][j]
             board1 = newBoard.GetState()
             moveTuple = (cur, move)
-            newBoard.MovePiece(moveTuple)
+            newBoard.MovePieceAI(moveTuple)
             board1 = newBoard.GetState()
             myPieces = self.GetMyPiecesWithLegalMoves(board1,color1)
             for (x,y) in myPieces:
@@ -68,7 +68,7 @@ class hankAI:
                     continue
                 move1 = legalMoves1[random.randint(0,len(legalMoves1)-1)]
                 moveTuple = ((x,y), move1)
-                newBoard.MovePiece(moveTuple)
+                newBoard.MovePieceAI(moveTuple)
             score = newBoard.getScore(piece, newBoard.GetState())
             if score > best_score:
                 best_score = score

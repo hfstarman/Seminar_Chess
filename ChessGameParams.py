@@ -39,7 +39,7 @@ class TkinterGameSetupParams:
 		
 
 		b = Button(self.frame, text="Start the Game!", command=self.ok)
-		b.grid(row=i+6,column=1)
+		b.grid(row=40,column=1)
 
 	def ok(self):
 		self.player1Name = "" #self.entry_player1Name.get()

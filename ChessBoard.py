@@ -113,12 +113,24 @@ class ChessBoard:
 			return 5
 		if 'Q' in pieceName:
 			return 9
+		if 'K' in pieceName:
+			return 1000
+
+		print("should never print")
+		return None
+
 
 	def addCapturePoints(self, capturingPieceName, capturedPieceName, captureDict):
+		if 'e' == capturedPieceName:
+			return
+		print(capturedPieceName)
+
 		if 'Q' in capturingPieceName and len(capturingPieceName) > 2:
 			capturingPieceName = capturingPieceName[0] + 'P' + capturingPieceName[-1]
 
 		captureDict[capturingPieceName] += self.getCaptureValue(capturedPieceName)
+		print(capturedPieceName, " received ", self.getCaptureValue(capturedPieceName), " points")
+		print("Total: ", captureDict[capturingPieceName])
 
 
 	def ConvertMoveTupleListToAlgebraicNotation(self,moveTupleList):
@@ -212,6 +224,44 @@ class ChessBoard:
 						    " to "+self.ConvertToAlgebraicNotation(moveTuple[1])
 		else:
 			self.addCapturePoints(fromPiece, toPiece, captureDict)
+			messageString = fromPiece_fullString+ " from "+self.ConvertToAlgebraicNotation(moveTuple[0])+\
+						" captures "+toPiece_fullString+" at "+self.ConvertToAlgebraicNotation(moveTuple[1])+"!"
+
+		#capitalize first character of messageString
+		messageString = messageString[0].upper() +messageString[1:len(messageString)] #CHANGED: messageString = string.upper(messageString[0])+messageString[1:len(messageString)]
+
+		return messageString
+
+	def MovePieceAI(self,moveTuple):
+
+		if moveTuple == None:
+			return "Turn Passed"
+
+
+		fromSquare_r = moveTuple[0][0]
+		fromSquare_c = moveTuple[0][1]
+		toSquare_r = moveTuple[1][0]
+		toSquare_c = moveTuple[1][1]
+
+		fromPiece = self.squares[fromSquare_r][fromSquare_c]
+		toPiece = self.squares[toSquare_r][toSquare_c]
+
+		self.squares[toSquare_r][toSquare_c] = fromPiece
+		self.squares[fromSquare_r][fromSquare_c] = 'e'
+
+		fromPiece_fullString = self.GetFullString(fromPiece)
+		toPiece_fullString = self.GetFullString(toPiece)
+
+		#Pawn promotion
+		if 'wP' in fromPiece and toSquare_r == 0:
+			self.squares[toSquare_r][toSquare_c] = 'wQ' + fromPiece[-1] #Add the pawn's Number
+		elif 'bP' in fromPiece and toSquare_r == 7:
+			self.squares[toSquare_r][toSquare_c] = 'bQ' + fromPiece[-1]
+
+		if toPiece == 'e':
+			messageString = fromPiece_fullString+ " moves from "+self.ConvertToAlgebraicNotation(moveTuple[0])+\
+						    " to "+self.ConvertToAlgebraicNotation(moveTuple[1])
+		else:
 			messageString = fromPiece_fullString+ " from "+self.ConvertToAlgebraicNotation(moveTuple[0])+\
 						" captures "+toPiece_fullString+" at "+self.ConvertToAlgebraicNotation(moveTuple[1])+"!"
 
