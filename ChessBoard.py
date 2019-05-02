@@ -95,7 +95,10 @@ class ChessBoard:
 			Won = True
 
 		if Won == False:
-			return 0
+			if alive:
+				return 3
+			else:
+				return 0
 		if alive:
 			return 10
 		else:
@@ -117,7 +120,7 @@ class ChessBoard:
 		if 'Q' in pieceName:
 			return 9
 		if 'K' in pieceName:
-			return 1000
+			return 9001
 
 		print("should never print")
 		return None

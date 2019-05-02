@@ -320,9 +320,14 @@ class PythonChessMain:
             if self.AIvsAI and self.AIpause:
                 time.sleep(self.AIpauseSeconds)
 
-        print(self.captureDict)
+        
         self.Gui.PrintMessage("KING CAPTURED!")
         winnerIndex = (currentPlayerIndex+1)%2
+
+        for piece in self.captureDict:
+            self.captureDict[piece] += self.Board.getScore(piece, self.Board.GetState())
+
+        print(self.captureDict)
         self.Gui.PrintMessage(self.player[winnerIndex].GetColor()+" won the game!")
         self.Gui.EndGame(board)
         self.winnerIndex = winnerIndex
