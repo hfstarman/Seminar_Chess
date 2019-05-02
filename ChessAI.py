@@ -52,17 +52,6 @@ class hankAI:
         best_move = None
         best_score = 0
         for move in legalMoves:
-<<<<<<< HEAD
-            score = 0
-            # if move captures add piece value to score
-            #a quick dumb and dirty way to force pieces to kill the opposing king when able
-            if('K' in board[move[0]][move[1]] and piece[0] not in board[move[0]][move[1]]):
-                print("best move", (cur, move))
-                print("KING SHOULD DIE HERE")
-                return (cur, move)
-
-=======
->>>>>>> b9196c614221bf0a189b7f0ddfca1478b5ab6c00
             newBoard = ChessBoard()
 
             score = 0
